@@ -10,14 +10,19 @@ jobs:
     name: Typeset document
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:latest
+      image: texlive/texlive:latest
+      options: --user root --security-opt seccomp=unconfined
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Install Lilypond
         run: |
           set -e
-          apt-get -qy update
-          apt-get -qy install --no-install-recommends lilypond
+          apt -y update
+          apt -y install --no-install-recommends lilypond
       - name: Typeset score
-        run: lilypond document.ly
+        run: |
+          lilypond document.ly
+      - name: Typeset lyluatex test
+        run: |
+          lualatex -shell-escape document.tex
